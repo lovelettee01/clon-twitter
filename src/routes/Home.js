@@ -1,6 +1,12 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import Navigation from "components/Navgation";
 const Home = () => {
-  return <span>Home</span>;
+  console.log(`Home`);
+  return (
+    <>
+      <Navigation />
+      <span>Home</span>
+    </>
+  );
 };
 export default Home;

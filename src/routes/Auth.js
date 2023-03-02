@@ -5,12 +5,15 @@ import {
   browserSessionPersistence,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
 } from "firebase/auth";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, setNewAccount] = useState(true);
+  const [newAccount, setNewAccount] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const onChange = (e) => {
@@ -33,22 +36,37 @@ const Auth = () => {
           password
         );
       } else {
-        const a = await setPersistence(authService, browserSessionPersistence);
-        console.log(a);
+        //const persistence = await setPersistence(authService, browserSessionPersistence);
         account = await signInWithEmailAndPassword(
           authService,
           email,
           password
         );
       }
-
-      console.log(account.user);
     } catch (e) {
       setErrorMsg(e.message);
     }
   };
 
   const toggleAccount = () => setNewAccount((prev) => !prev);
+
+  const onSocialClick = async (e) => {
+    const {
+      target: { name },
+    } = e;
+    let provider;
+    if (name === "google") provider = new GoogleAuthProvider();
+    else if (name === "github") provider = new GithubAuthProvider();
+
+    const data = await signInWithPopup(authService, provider)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(data);
+  };
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -78,8 +96,12 @@ const Auth = () => {
       </span>
       <p>{errorMsg}</p>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name="google" onClick={onSocialClick}>
+          Continue with Google
+        </button>
+        <button name="github" onClick={onSocialClick}>
+          Continue with Github
+        </button>
       </div>
     </>
   );

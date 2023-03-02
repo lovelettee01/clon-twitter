@@ -7,8 +7,9 @@ import {
   Link,
 } from "react-router-dom";
 
-import Auth from "../routes/Auth";
-import Home from "../routes/Home";
+import Navigation from "components/Navgation";
+import Auth from "routes/Auth";
+import Home from "routes/Home";
 
 const homeRouter = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const authRouter = createBrowserRouter([
 ]);
 
 const myRouter = ({ isLogined }) => {
+  console.log(`myRouter ${isLogined}`);
   return (
     <>
       {isLogined ? (
