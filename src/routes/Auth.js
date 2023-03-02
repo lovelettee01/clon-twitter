@@ -36,7 +36,7 @@ const Auth = () => {
           password
         );
       } else {
-        //const persistence = await setPersistence(authService, browserSessionPersistence);
+        const persistence = await setPersistence(authService, browserSessionPersistence);
         account = await signInWithEmailAndPassword(
           authService,
           email,
@@ -57,14 +57,7 @@ const Auth = () => {
     let provider;
     if (name === "google") provider = new GoogleAuthProvider();
     else if (name === "github") provider = new GithubAuthProvider();
-
-    const data = await signInWithPopup(authService, provider)
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const data = await signInWithPopup(authService, provider);
     console.log(data);
   };
   return (

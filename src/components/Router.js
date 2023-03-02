@@ -1,41 +1,38 @@
 import React from "react";
-
 import {
   createBrowserRouter,
   RouterProvider,
-  HashRouter as Router,
-  Link,
 } from "react-router-dom";
 
-import Navigation from "components/Navgation";
 import Auth from "routes/Auth";
+import Main from "routes/Main";
 import Home from "routes/Home";
+import Profile from "routes/Profile";
 
-const homeRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-]);
+const myRouter = ({ isLogined, userInfo }) => {
 
-const authRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: <Auth />,
-  },
-]);
+  let router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Main />,
+      children: [
+        {
+          path: "/",
+          element: <Home userInfo={userInfo} />,
+        },
+        {
+          path: "profile",
+          element: <Profile userInfo={userInfo} />,
+        },
+      ],
+    },
+  ]);
 
-const myRouter = ({ isLogined }) => {
-  console.log(`myRouter ${isLogined}`);
-  return (
-    <>
-      {isLogined ? (
-        <RouterProvider router={homeRouter} />
-      ) : (
-        <RouterProvider router={authRouter} />
-      )}
-    </>
-  );
+  if(!isLogined) {
+    router.routes[0].element = <Auth />;
+  }
+
+  return <RouterProvider router={router} />;
 };
 
 export default myRouter;
