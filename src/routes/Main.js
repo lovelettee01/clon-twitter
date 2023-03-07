@@ -6,7 +6,7 @@ function Main() {
     return (
         <>
             {/* all the other elements */}
-            <Navigation/>
+            <Navigation />
             <div id="detail">
                 <Outlet />
             </div>
