@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { storeService } from "../firebase.config";
+import { storeService, storageService } from "../firebase.config";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { ref, deleteObject } from "firebase/storage";
 
 const COLLECTION_NAME = "tweets";
 const Tweet = ({ tweetInfo, isOwner }) => {
@@ -10,6 +11,10 @@ const Tweet = ({ tweetInfo, isOwner }) => {
         const ok = window.confirm("Are you Delete?");
         if (ok) {
             await deleteDoc(doc(storeService, COLLECTION_NAME, tweetInfo.id));
+
+            const fileRef = ref(storageService, tweetInfo.attachmentUrl);
+            const result = await deleteObject(fileRef);
+            console.log("result", result);
         }
     };
 
@@ -43,6 +48,14 @@ const Tweet = ({ tweetInfo, isOwner }) => {
                 </form>
             ) : (
                 <>
+                    {tweetInfo.attachmentUrl && (
+                        <img
+                            src={tweetInfo.attachmentUrl}
+                            width="50px"
+                            alt="tweet icon"
+                            height="50px"
+                        />
+                    )}
                     <h4>{tweetInfo.comment} </h4>
                     {isOwner && (
                         <>

@@ -1,28 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { storeService } from "../firebase.config";
+import { storeService, storageService } from "../firebase.config";
 import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import Tweet from "components/Tweet";
+import { v4 as uuidv4 } from "uuid";
 
 const COLLECTION_NAME = "tweets";
 const Home = ({ userInfo }) => {
     const { uid } = userInfo;
     const [tweet, setTweet] = useState("");
     const [tweetList, setTweetList] = useState([]);
-    console.log(`Home`, tweetList);
+    const [attachment, setAttachment] = useState(null);
+    //console.log(`Home`, tweetList);
 
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
-            const docRef = await addDoc(
-                collection(storeService, COLLECTION_NAME),
-                {
-                    creatorId: uid,
-                    comment: tweet,
-                    createAt: Date.now(),
-                }
-            );
-            setTweet("");
-            console.log("Document written with ID: ", docRef.id);
+            let attachmentUrl = "";
+            if (attachment && attachment !== "") {
+                const fileRef = await ref(
+                    storageService,
+                    `upload/${userInfo.uid}/${uuidv4()}`
+                );
+
+                const response = await uploadString(
+                    fileRef,
+                    attachment,
+                    "data_url"
+                );
+                attachmentUrl = await getDownloadURL(response.ref);
+            }
+
+            if (attachmentUrl !== "") {
+                const docRef = await addDoc(
+                    collection(storeService, COLLECTION_NAME),
+                    {
+                        creatorId: uid,
+                        comment: tweet,
+                        createAt: Date.now(),
+                        attachmentUrl,
+                    }
+                );
+                setTweet("");
+                setAttachment(null);
+                console.log("Document written with ID: ", docRef.id);
+            }
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -33,6 +55,28 @@ const Home = ({ userInfo }) => {
             target: { value },
         } = e;
         setTweet(value);
+    };
+
+    const onFileChange = (e) => {
+        e.preventDefault();
+        const {
+            target: { files },
+        } = e;
+        const thisFile = files[0];
+        const reader = new FileReader();
+        reader.onloadend = (finishedEvent) => {
+            const {
+                target: { result },
+            } = finishedEvent;
+            setAttachment(result);
+            console.log(finishedEvent);
+        };
+        reader.readAsDataURL(thisFile);
+    };
+
+    const onClearFile = (e) => {
+        e.preventDefault();
+        setAttachment(null);
     };
 
     useEffect(() => {
@@ -60,7 +104,24 @@ const Home = ({ userInfo }) => {
                         value={tweet}
                     />
                     &nbsp;
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={onFileChange}
+                        value={""}
+                    />
                     <input type={"submit"} value={"tweet"} />
+                    {attachment && (
+                        <>
+                            <img
+                                src={attachment}
+                                alt="Preview"
+                                width="50px"
+                                height="50px"
+                            />
+                            <button onClick={onClearFile}>취소</button>
+                        </>
+                    )}
                 </form>
 
                 <div>
