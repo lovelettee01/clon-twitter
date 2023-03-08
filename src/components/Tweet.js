@@ -12,9 +12,11 @@ const Tweet = ({ tweetInfo, isOwner }) => {
         if (ok) {
             await deleteDoc(doc(storeService, COLLECTION_NAME, tweetInfo.id));
 
-            const fileRef = ref(storageService, tweetInfo.attachmentUrl);
-            const result = await deleteObject(fileRef);
-            console.log("result", result);
+            if (tweetInfo.attachmentUrl !== "") {
+                const fileRef = ref(storageService, tweetInfo.attachmentUrl);
+                const result = await deleteObject(fileRef);
+                console.log("result", result);
+            }
         }
     };
 

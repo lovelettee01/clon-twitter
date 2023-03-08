@@ -6,11 +6,11 @@ import Main from "routes/Main";
 import Home from "routes/Home";
 import Profile from "routes/Profile";
 
-const myRouter = ({ isLogined, userInfo }) => {
+const myRouter = ({ isLogined, userInfo, refreshUser }) => {
     let router = createBrowserRouter([
         {
             path: "/",
-            element: <Main />,
+            element: <Main userInfo={userInfo} />,
             children: [
                 {
                     path: "/",
@@ -18,7 +18,12 @@ const myRouter = ({ isLogined, userInfo }) => {
                 },
                 {
                     path: "profile",
-                    element: <Profile userInfo={userInfo} />,
+                    element: (
+                        <Profile
+                            userInfo={userInfo}
+                            refreshUser={refreshUser}
+                        />
+                    ),
                 },
             ],
         },

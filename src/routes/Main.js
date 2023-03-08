@@ -2,11 +2,11 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Navigation from "components/Navgation";
 
-function Main() {
+function Main({ userInfo }) {
     return (
         <>
             {/* all the other elements */}
-            <Navigation />
+            <Navigation userInfo={userInfo} />
             <div id="detail">
                 <Outlet />
             </div>

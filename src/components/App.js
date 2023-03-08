@@ -5,23 +5,32 @@ import { authService } from "firebase.config";
 function App() {
     const [init, setInit] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
-    const [isLogined, setIsLogin] = useState(false);
     useEffect(() => {
         authService.onAuthStateChanged((user) => {
-            if (user) {
-                setIsLogin(true);
-                setUserInfo(user);
-            } else {
-                setIsLogin(false);
-            }
+            setUserInfo({
+                uid: user.uid,
+                displayName: user.displayName,
+            });
             setInit(true);
         });
     }, []);
 
+    const refreshUser = () => {
+        const user = authService.currentUser;
+        setUserInfo({
+            uid: user.uid,
+            displayName: user.displayName,
+        });
+    };
+
     return !init ? (
         "Initialize...."
     ) : (
-        <Router isLogined={isLogined} userInfo={userInfo} />
+        <Router
+            isLogined={userInfo !== null}
+            userInfo={userInfo}
+            refreshUser={refreshUser}
+        />
     );
 }
 
