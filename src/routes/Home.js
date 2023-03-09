@@ -4,16 +4,13 @@ import TweetFactory from "components/tweet/TweetFactory";
 import TweetList from "components/tweet/TweetList";
 
 const Home = ({ userInfo }) => {
-    return (
-        <>
-            <div>
-                <TweetFactory userInfo={userInfo} />
-
-                <div style={{ paddingTop: "20px" }}>
-                    <TweetList userInfo={userInfo} />
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <TweetFactory userInfo={userInfo} />
+      <div style={{ marginTop: "30" }}>
+        <TweetList userInfo={userInfo} />
+      </div>
+    </>
+  );
 };
 export default Home;

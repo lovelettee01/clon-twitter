@@ -3,14 +3,13 @@ import { Outlet } from "react-router-dom";
 import Navigation from "components/Navgation";
 
 function Main({ userInfo }) {
-    return (
-        <>
-            {/* all the other elements */}
-            <Navigation userInfo={userInfo} />
-            <div id="detail">
-                <Outlet />
-            </div>
-        </>
-    );
+  return (
+    <>
+      <Navigation userInfo={userInfo} />
+      <div style={{ marginTop: "20px" }}>
+        <Outlet />
+      </div>
+    </>
+  );
 }
 export default Main;

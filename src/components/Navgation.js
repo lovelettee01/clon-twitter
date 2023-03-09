@@ -1,35 +1,40 @@
 import React from "react";
-import { authService } from "firebase.config";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Navigation = ({ userInfo }) => {
-    const navigate = useNavigate();
-    const onLogoutClick = async () => {
-        await authService.signOut();
-        navigate("/");
-    };
-    return (
-        <div id="sidebar">
-            {/* other elements */}
-
-            <nav>
-                <ul>
-                    <li>
-                        <Link to={`/`}>Home</Link>
-                    </li>
-                    <li>
-                        <Link to={`profile`}>
-                            {userInfo.displayName}`s Profile
-                        </Link>
-                    </li>
-                </ul>
-                <div style={{ position: "absolute", right: 10, top: 10 }}>
-                    <button onClick={onLogoutClick}>Logout</button>
-                </div>
-            </nav>
-
-            {/* other elements */}
-        </div>
-    );
+  return (
+    <nav>
+      <ul style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
+        <li>
+          <Link to={`/`} style={{ marginRight: 10 }}>
+            <FontAwesomeIcon icon={faTwitter} color={"#04AAFF"} size="2x" />
+          </Link>
+        </li>
+        <li>
+          <Link
+            to={`profile`}
+            style={{
+              marginLeft: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              fontSize: 12,
+            }}
+          >
+            <FontAwesomeIcon icon={faUser} color={"#04AAFF"} size="2x" />
+            <span style={{ marginTop: 10 }}>
+              {userInfo.displayName
+                ? `${userInfo.displayName}의 Profile`
+                : "Profile"}
+            </span>
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
 };
 export default Navigation;
