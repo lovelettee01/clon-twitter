@@ -7,10 +7,14 @@ function App() {
     const [userInfo, setUserInfo] = useState(null);
     useEffect(() => {
         authService.onAuthStateChanged((user) => {
-            setUserInfo({
-                uid: user.uid,
-                displayName: user.displayName,
-            });
+            if (user) {
+                setUserInfo({
+                    uid: user.uid,
+                    displayName: user.displayName,
+                });
+            } else {
+                setUserInfo(null);
+            }
             setInit(true);
         });
     }, []);

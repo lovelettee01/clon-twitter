@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { authService, storeService } from "../firebase.config";
+import React, { useState } from "react";
+import { authService } from "../firebase.config";
 import { updateProfile } from "firebase/auth";
-import {
-    collection,
-    onSnapshot,
-    query,
-    where,
-    orderBy,
-} from "firebase/firestore";
-import Tweet from "components/Tweet";
 
-const COLLECTION_NAME = "tweets";
+import TweetList from "components/tweet/TweetList";
+
 const Profile = ({ userInfo, refreshUser }) => {
-    const { uid, displayName } = userInfo;
+    const { displayName } = userInfo;
     const [userName, setUserName] = useState(displayName);
-    const [tweetList, setTweetList] = useState([]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -36,25 +28,6 @@ const Profile = ({ userInfo, refreshUser }) => {
         setUserName(value);
     };
 
-    useEffect(() => {
-        const queryCollection = query(
-            collection(storeService, COLLECTION_NAME),
-            where("creatorId", "==", uid),
-            orderBy("createAt")
-        );
-        onSnapshot(queryCollection, (snapshot) => {
-            setTweetList([]);
-            console.log("My Tweet data: ", snapshot.docs);
-            snapshot.docs.forEach((doc) => {
-                const newDoc = {
-                    id: doc.id,
-                    ...doc.data(),
-                };
-                setTweetList((prev) => [newDoc, ...prev]);
-            });
-        });
-    }, [uid]);
-
     return (
         <>
             <form onSubmit={onSubmit}>
@@ -69,13 +42,7 @@ const Profile = ({ userInfo, refreshUser }) => {
 
             <div style={{ paddingTop: "20px" }}>
                 <span>My Tweet</span>
-                {tweetList.map((tweet) => (
-                    <Tweet
-                        key={tweet.id}
-                        tweetInfo={tweet}
-                        isOwner={tweet.creatorId === uid}
-                    />
-                ))}
+                <TweetList userInfo={userInfo} isMine={true} />
             </div>
         </>
     );

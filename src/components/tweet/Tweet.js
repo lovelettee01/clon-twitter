@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { storeService, storageService } from "../firebase.config";
+import { storeService, storageService } from "../../firebase.config";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 
-const COLLECTION_NAME = "tweets";
+const COLLECTION_NAME = process.env.REACT_APP_COLLECTION_NAME;
 const Tweet = ({ tweetInfo, isOwner }) => {
     const [isEdit, setIsEdit] = useState(false);
     const [newTweet, setNewTweet] = useState(tweetInfo.comment);
